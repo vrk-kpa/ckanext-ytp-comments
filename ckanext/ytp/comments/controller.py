@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 class CommentController(BaseController):
     def add(self, dataset_id):
-        return self._add_or_reply(dataset_id)
+        return self._add_or_reply('new', dataset_id)
 
     def edit(self, dataset_id, comment_id):
 
@@ -59,9 +59,9 @@ class CommentController(BaseController):
         except:
             abort(404)
 
-        return self._add_or_reply(dataset_id)
+        return self._add_or_reply('reply', dataset_id, parent_id)
 
-    def _add_or_reply(self, dataset_id):
+    def _add_or_reply(self, comment_type, dataset_id, parent_id=None):
         """
        Allows the user to add a comment to an existing dataset
        """
@@ -89,12 +89,19 @@ class CommentController(BaseController):
                 success = True
             except ValidationError, ve:
                 log.debug(ve)
+                if ve.error_dict and ve.error_dict.get('message'):
+                    msg = ve.error_dict['message']
+                else:
+                    msg = str(ve)
+                h.flash_error(msg)
             except Exception, e:
                 log.debug(e)
                 abort(403)
 
-            if success:
-                h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))
+            h.redirect_to(str('/dataset/%s#%s' % (
+                c.pkg.name,
+                'comment_' + res['id'] if success else ('comment_form' if comment_type == 'new' else 'reply_' + str(parent_id))
+            )))
 
         return render("package/read.html")
 
