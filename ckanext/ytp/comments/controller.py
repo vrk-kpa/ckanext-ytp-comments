@@ -1,8 +1,9 @@
+import email_notifications
 import logging
 
 from ckan.lib.base import h, BaseController, render, abort, request
 from ckan import model
-from ckan.common import c
+from ckan.common import c, config
 from ckan.logic import check_access, get_action, clean_dict, tuplize_dict, ValidationError, parse_params
 from ckan.lib.navl.dictization_functions import unflatten
 
@@ -94,6 +95,12 @@ class CommentController(BaseController):
                 abort(403)
 
             if success:
+                if config.get('ckan.comments.email_notifications_enabled', False):
+                    email_notifications.notify_admin(
+                        'notification-new-comment',
+                        dataset_id,
+                        res['id']
+                    )
                 h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))
 
         return render("package/read.html")

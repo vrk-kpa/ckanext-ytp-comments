@@ -31,3 +31,15 @@ Init db
 ```
 paster --plugin=ckanext-ytp-comments initdb --config={ckan.ini}
 ```
+
+## Email Notifications
+
+The following config options can be added to the CKAN `.ini` file to enable email notifications whenever a new comment is added:
+
+    ckan.comments.email_notifications_enabled = True
+
+(defaults to `False`)
+
+    ckan.comments.email_notification_to = author
+
+Valid values are: `author` or `maintainer` defaults to `author` if incorrectly set, or not set and `ckan.comments.email_notifications_enabled = True`
