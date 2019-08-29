@@ -43,3 +43,5 @@ The following config options can be added to the CKAN `.ini` file to enable emai
     ckan.comments.email_notification_to = author
 
 Valid values are: `author` or `maintainer` defaults to `author` if incorrectly set, or not set and `ckan.comments.email_notifications_enabled = True`
+
+**Note:** emails are sent via a queued job using the standard CKAN Job Worker: https://docs.ckan.org/en/2.8/maintaining/background-tasks.html
