@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 from ckan.plugins import implements, toolkit
+from ckanext.ytp.comments import helpers
 
 import logging
 
@@ -23,11 +24,13 @@ class YtpCommentsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config, "templates")
         toolkit.add_public_directory(config, 'public')
         toolkit.add_resource('public/javascript/', 'comments_js')
+        toolkit.add_resource('fanstatic', 'ytp_comments')
 
     def get_helpers(self):
         return {
             'get_comment_thread': self._get_comment_thread,
-            'get_comment_count_for_dataset': self._get_comment_count_for_dataset
+            'get_comment_count_for_dataset': self._get_comment_count_for_dataset,
+            'maximum_thread_depth': helpers.maximum_thread_depth
         }
 
     def get_actions(self):

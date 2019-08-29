@@ -31,3 +31,9 @@ Init db
 ```
 paster --plugin=ckanext-ytp-comments initdb --config={ckan.ini}
 ```
+
+## Thread Limitation
+
+If you wish to limit thread depth you can set the following option in your CKAN `.ini` file (defaults to 999):
+
+    ckan.comments.maximum_thread_depth = #
