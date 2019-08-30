@@ -2,8 +2,10 @@
 
 {% resource "comments_js/comments.js" %}
 
+{% set content_type = content_type or 'dataset' %}
+
 {% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add") %}
-    <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
+    <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
         <div class="form-controls">
             <label for="subject">{{ _('Subject') }}</label>
             <input type="text" class="form-control" name="subject" {% if not empty %}value="{{ values.subject }}" {% endif %}/>
@@ -20,9 +22,9 @@
 
 
 
-{% set thread = h.get_comment_thread(pkg_name) %}
+{% set thread = h.get_comment_thread(pkg_name, content_type) %}
 
-{% macro comment_thread(thread) %}
+{% macro comment_thread(thread, content_type) %}
 
     <div class="comment-wrapper">
     {% for comment in thread.comments %}
@@ -65,7 +67,7 @@
             </div>
         </div>
             {% if comment.comments | length != 0 %}
-                {{ comment_thread(comment) }}
+                {{ comment_thread(comment, content_type) }}
             {% endif %}
     {% endfor %}
     </div>
@@ -73,24 +75,24 @@
 {% endmacro %}
 <h3 id="comments">{{ _('Comments') }}</h3>
 <div class="comment-container">
-    {{ comment_thread(thread) }}
+    {{ comment_thread(thread, content_type) }}
 </div>
 
 {% if userobj %}
 
-<form class="form" action="{{ pkg_id }}/comments/add" method="POST">
-    <div class="form-controls">
-        <label for="subject">{{ _('Subject') }}</label>
-        <input type="text" class="form-control" name="subject"/>
+    <form id="comment_form" class="form" action="/{{ content_type }}/{{ pkg_id }}/comments/add" method="POST">
+        <div class="form-controls">
+            <label for="subject">{{ _('Subject') }}</label>
+            <input type="text" class="form-control" name="subject"/>
 
-        <label for="comment">{{ _('Comment') }}</label>
-        <textarea name="comment" class="form-control" rows="10"></textarea>
-    </div>
-    <div class="form-actions">
-        <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
-        <input type="reset" class="btn" value="{{ _('Clear') }}"/>
-    </div>
-</form>
+            <label for="comment">{{ _('Comment') }}</label>
+            <textarea name="comment" class="form-control" rows="10"></textarea>
+        </div>
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
+            <input type="reset" class="btn" value="{{ _('Clear') }}"/>
+        </div>
+    </form>
 
 {% else %}
     {{ _('Login to comment.') }}
