@@ -2,6 +2,7 @@ import ckan.plugins as plugins
 from ckan.plugins import implements, toolkit
 
 import logging
+import notification_helpers
 
 log = logging.getLogger(__name__)
 
@@ -23,11 +24,14 @@ class YtpCommentsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config, "templates")
         toolkit.add_public_directory(config, 'public')
         toolkit.add_resource('public/javascript/', 'comments_js')
+        toolkit.add_resource('fanstatic', 'ytp_comments')
 
     def get_helpers(self):
         return {
             'get_comment_thread': self._get_comment_thread,
-            'get_comment_count_for_dataset': self._get_comment_count_for_dataset
+            'get_comment_count_for_dataset': self._get_comment_count_for_dataset,
+            'user_comment_follow_mute_status': notification_helpers.get_user_comment_follow_mute_status,
+            'comment_notification_recipients_enabled': notification_helpers.get_comment_notification_recipients_enabled
         }
 
     def get_actions(self):
@@ -70,6 +74,10 @@ class YtpCommentsPlugin(plugins.SingletonPlugin):
         map.connect('/dataset/{dataset_id}/comments/{comment_id}/edit', controller=controller, action='edit')
         map.connect('/dataset/{dataset_id}/comments/{parent_id}/reply', controller=controller, action='reply')
         map.connect('/dataset/{dataset_id}/comments/{comment_id}/delete', controller=controller, action='delete')
+        # Routes for following and muting comment notifications
+        notification_controller = 'ckanext.ytp.comments.notification_controller:NotificationController'
+        map.connect('/comments/{thread_or_comment_id}/follow', controller=notification_controller, action='follow')
+        map.connect('/comments/{thread_or_comment_id}/mute', controller=notification_controller, action='mute')
         return map
 
     def _get_comment_thread(self, dataset_name):

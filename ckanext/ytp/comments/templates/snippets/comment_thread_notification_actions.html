@@ -1,0 +1,30 @@
+{% set base_url = '/comments/' + comment_id %}
+
+{% macro comment_thread_action_button(base_url, comment_id, action, following, muted) %}
+    {% set btn_style = 'btn-' + ('success' if action == 'follow' else 'warning') %}
+    {% set title = 'Thread ' + ('followed' if action == 'follow' else 'muted') %}
+    {% set data_module_content = 'You are now following comments on this thread.' if action == 'follow' else 'You have muted comment notifications on this thread.' %}
+
+    {% if action == 'follow' and (following or (following_content and not muted)) %}
+        {% set hidden_class = True %}
+    {% elif action == 'mute' and (muted or (not following_content and not following)) %}
+        {% set hidden_class = True %}
+    {% else %}
+        {% set hidden_class = False %}
+    {% endif %}
+
+    <button href="{{ base_url }}/{{action}}"
+            class="btn btn-xs {{ btn_style }} comments-{{ action }}-thread {{ 'hidden' if hidden_class }}"
+            title="{{ title }}"
+            data-module="follow-or-mute"
+            data-module-action="{{ action }}"
+            data-module-content="{{ data_module_content }}"
+            data-module-comment_id="{{ comment_id }}">
+        {{ 'Follow' if action == 'follow' else 'Mute' }} thread
+    </button>
+{% endmacro %}
+
+<div class="comment-action">
+    {{ comment_thread_action_button(base_url, comment_id, 'follow', following, muted) }}
+    {{ comment_thread_action_button(base_url, comment_id, 'mute', following, muted) }}
+</div>

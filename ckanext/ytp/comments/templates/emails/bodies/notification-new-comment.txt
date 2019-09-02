@@ -1,0 +1,5 @@
+A comment has been made on the Queensland Government open data portal that may be relevant to you.
+
+{{ url }}
+
+Do not reply to this email.
