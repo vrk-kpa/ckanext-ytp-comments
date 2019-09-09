@@ -39,12 +39,16 @@ class CommentController(BaseController):
                 success = True
             except ValidationError, ve:
                 log.debug(ve)
+                if ve.error_dict and ve.error_dict.get('message'):
+                    msg = ve.error_dict['message']
+                else:
+                    msg = str(ve)
+                h.flash_error(msg)
             except Exception, e:
                 log.debug(e)
                 abort(403)
 
-            if success:
-                h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))
+            h.redirect_to(str('/dataset/%s#edit_%s' % (c.pkg.name, res['id'] if success else comment_id)))
 
         return render("package/read.html")
 
