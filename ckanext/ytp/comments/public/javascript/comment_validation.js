@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 
             hideFormErrors();
 
-            if (!comment) {
+            if (!comment || !comment.replace(/\s/g, '').length) {
                 form.find('.error-comment').removeClass('hidden');
                 display_errors = true;
             }
