@@ -57,7 +57,7 @@
                     <li><a onclick="ShowCommentForm('edit_{{ comment.id }}')">{{ _('Edit') }}</a></li>
                     {{ comment_form(comment, prefix='edit_', action='edit') }}
                 {% endif %}
-                {% if userobj %}
+                {% if userobj and depth | int < maximum_thread_depth | int  %}
                     <li><a onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</a> </li>
                     {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
                 {% endif %}
