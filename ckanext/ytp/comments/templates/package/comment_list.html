@@ -7,6 +7,7 @@
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
         <div class="{{ action }}_form_errors form-errors alert alert-error hidden">
             <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
+            <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>
         </div>
         <div class="form-controls">
             <label for="subject">{{ _('Subject') }}</label>
@@ -28,8 +29,8 @@
 
 {% macro comment_thread(thread) %}
 
-    <div class="comment-wrapper">
     {% for comment in thread.comments %}
+    <div id="comment_{{ comment.id }}" class="comment-wrapper">
         {{ comment.id }}
         <div class="comment">
             {% if comment.state != 'deleted' %}
@@ -57,11 +58,15 @@
 
                 {% if userobj and comment.user_id == userobj.id %}
                     <li><a onclick="ShowCommentForm('edit_{{ comment.id }}')">{{ _('Edit') }}</a></li>
-                    {{ comment_form(comment, prefix='edit_', action='edit') }}
+                    <div id="comment_form_edit_{{ comment.id }}">
+                        {{ comment_form(comment, prefix='edit_', action='edit') }}
+                    </div>
                 {% endif %}
                 {% if userobj %}
                     <li><a onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</a> </li>
-                    {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
+                    <div id="comment_form_reply_{{ comment.id }}">
+                        {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
+                    </div>
                 {% endif %}
 
             </ul>
@@ -71,8 +76,8 @@
             {% if comment.comments | length != 0 %}
                 {{ comment_thread(comment) }}
             {% endif %}
-    {% endfor %}
     </div>
+    {% endfor %}
 
 {% endmacro %}
 <h3 id="comments">{{ _('Comments') }}</h3>
@@ -82,9 +87,10 @@
 
 {% if userobj %}
 
-<form class="form" action="{{ pkg_id }}/comments/add" method="POST">
+<form id="comment_form" class="form" action="{{ pkg_id }}/comments/add" method="POST">
     <div id="comment_form_errors" class="alert alert-error form-errors hidden">
         <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
+        <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>
     </div>
     <div class="form-controls">
         <label for="subject">{{ _('Subject') }}</label>

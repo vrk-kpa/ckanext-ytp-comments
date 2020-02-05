@@ -31,3 +31,20 @@ Init db
 ```
 paster --plugin=ckanext-ytp-comments initdb --config={ckan.ini}
 ```
+
+## Profanity Filtering
+
+To enable profanity filtering, add the following configuration options to your CKAN `.ini` file:
+
+    ckan.comments.check_for_profanity = True
+
+And optionally (if you prefer a bad word list different to the one supplied):
+
+    ckan.comments.bad_words_file = /PATH/TO/BAD/WORDS.txt
+
+Profanity filtering is implemented using the `profanityfilter` python library (https://github.com/areebbeigh/profanityfilter), which is included in the `requirements.txt` file.
+
+You may need to re-install/update the requirements:
+
+    pip install -r requirements.txt
+         
