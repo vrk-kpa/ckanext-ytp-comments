@@ -1,5 +1,6 @@
 
 
+{% resource "ytp_comments/ytp_comments.css" %}
 {% resource "comments_js/comments.js" %}
 {% resource "comments_js/comment_validation.js" %}
 
@@ -25,12 +26,13 @@
 
 
 {% set thread = h.get_comment_thread(pkg_name) %}
+{% set maximum_thread_depth = h.maximum_thread_depth() %}
+{% set depth = 0 %}
 
-{% macro comment_thread(thread) %}
+{% macro comment_thread(thread, depth=0) %}
 
     <div class="comment-wrapper">
     {% for comment in thread.comments %}
-        {{ comment.id }}
         <div class="comment">
             {% if comment.state != 'deleted' %}
                 <h3>{{ comment.subject }}</h3>
@@ -59,7 +61,7 @@
                     <li><a onclick="ShowCommentForm('edit_{{ comment.id }}')">{{ _('Edit') }}</a></li>
                     {{ comment_form(comment, prefix='edit_', action='edit') }}
                 {% endif %}
-                {% if userobj %}
+                {% if userobj and depth | int < maximum_thread_depth | int  %}
                     <li><a onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</a> </li>
                     {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
                 {% endif %}
@@ -68,8 +70,8 @@
             {% endif %}
             </div>
         </div>
-            {% if comment.comments | length != 0 %}
-                {{ comment_thread(comment) }}
+            {% if (comment.comments | length != 0) and depth | int < maximum_thread_depth | int %}
+                {{ comment_thread(comment, (depth + 1)) }}
             {% endif %}
     {% endfor %}
     </div>
