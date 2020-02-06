@@ -1,0 +1,20 @@
+{% set base_url = '/comments/' + thread_id %}
+<div class="notification-actions">
+    <button href="{{ base_url }}/follow"
+            class="btn btn-success comments-follow {{ 'hidden' if following }}"
+            title="{{ content_type[0]|upper }}{{ content_type[1:] }} followed"
+            data-module="follow-or-mute"
+            data-module-action="follow"
+            data-module-content="You are now following comments on this {{ content_type }}."
+            data-module-content_type="{{ content_type }}"
+            data-module-thread_id="{{ thread_id }}">
+        Follow comments
+    </button>
+    <button href="{{ base_url }}/mute"
+            class="btn btn-warning comments-mute {{ 'hidden' if not following }}"
+            title="Mute comments"
+            data-module="confirm-mute-content-item"
+            data-module-content="By muting comments on this {{ content_type }} you will no longer receive any email notifications on this {{ content_type }} when new comments are posted. Are you sure?">
+        Mute comments
+    </button>
+</div>

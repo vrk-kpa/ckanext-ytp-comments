@@ -33,5 +33,6 @@ setup(
 
         [paste.paster_command]
         initdb = ckanext.ytp.comments.command:InitDBCommand
+        init_notifications_db = ckanext.ytp.comments.command:InitNotificationsDB
     ''',
 )
