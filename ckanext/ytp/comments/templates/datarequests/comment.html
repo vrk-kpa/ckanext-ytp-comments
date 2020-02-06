@@ -1,0 +1,7 @@
+{% ckan_extends %}
+
+{% block primary_content_inner %}
+
+  {% snippet "package/comment_list.html", content_type='datarequest', pkg_id=c.datarequest.id, pkg_name=c.datarequest.id, userobj=c.userobj %}
+
+{% endblock %}
