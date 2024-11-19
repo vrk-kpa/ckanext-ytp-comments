@@ -1,3 +1,6 @@
+Not maintained in years, use [Queensland fork](https://github.com/qld-gov-au/ckanext-ytp-comments) instead.
+====================
+
 ckanext-ytp-comments
 ====================
 
